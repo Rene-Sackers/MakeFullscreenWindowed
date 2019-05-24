@@ -1,0 +1,77 @@
+﻿<Window x:Class="MakeFullscreenWindowed.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:MakeFullscreenWindowed.Converters"
+        xmlns:userControls="clr-namespace:MakeFullscreenWindowed.UserControls"
+        Title="Make Fullscreen Windowed"
+        MinHeight="350"
+        Height="350"
+        MinWidth="600"
+        Width="600"
+        x:Name="RootElement"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    
+    <Window.Resources>
+        <converters:ProcessToReadableConverter x:Key="ProcessToReadableConverter" />
+        <converters:ObjectToBoolConverter x:Key="SelectedItemsToBoolConverter" />
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="100" MaxWidth="300" />
+            <ColumnDefinition Width="3" />
+            <ColumnDefinition Width="*" MinWidth="100" />
+        </Grid.ColumnDefinitions>
+        
+        <Grid Margin="5" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            
+            <TextBlock
+                Text="Processes"
+                Margin="0,0,0,2.5"
+                Grid.Row="0"/>
+            <ListBox
+                Name="ListBoxProcesses"
+                Margin="0,2.5,0,2.5"
+                Grid.Row="1"
+                ItemsSource="{Binding ElementName=RootElement, Path=Processes, Converter={StaticResource ProcessToReadableConverter}}" />
+            <Button
+                Content="Refresh"
+                Height="21"
+                Margin="0,2.5,0,0"
+                Grid.Row="2"
+                Click="RefreshClicked"
+                />
+        </Grid>
+        
+        <GridSplitter ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" Grid.Column="1" />
+
+        <Grid Margin="5" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            
+            <TextBlock Text="Monitors" Margin="0,0,0,2.5" Grid.Row="0" />
+            <Viewbox Grid.Row="1">
+                <userControls:MonitorPicker x:Name="MonitorPickerPicker" />
+            </Viewbox>
+
+			<CheckBox IsChecked="{Binding StretchWindow}" Grid.Row="2">Stretch window 1 extra pixel to remove borders</CheckBox>
+
+            <Button
+                Content="Place"
+                IsEnabled="{Binding ElementName=ListBoxProcesses, Path=SelectedItem, Converter={StaticResource SelectedItemsToBoolConverter}}"
+                Height="21"
+                Margin="0,2.5,0,0"
+                Grid.Row="3"
+                Click="PlaceButtonClicked" />
+        </Grid>
+    </Grid>
+</Window>
